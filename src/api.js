@@ -1,5 +1,7 @@
 const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
+console.log('API URL:', process.env.REACT_APP_API_URL);
+
 // Функция регистрации
 export async function registerUser(payload) {
   const res = await fetch(`${API_BASE}/register`, {
