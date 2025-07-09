@@ -1,4 +1,4 @@
-const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5000";
+const API_BASE = "https://medicalprojects-production.up.railway.app";
 
 console.log('API URL:', process.env.REACT_APP_API_URL);
 
