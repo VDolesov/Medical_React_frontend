@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { registerUser } from "../api";
 
-
 function RegisterPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -10,9 +9,10 @@ function RegisterPage() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [role, setRole] = useState("doctor");
-  const [adminSecret, setAdminSecret] = useState(""); // Для создания admin
+  const [adminSecret, setAdminSecret] = useState("");
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -20,6 +20,7 @@ function RegisterPage() {
     e.preventDefault();
     setError(null);
     setSuccess(null);
+    setLoading(true);
 
     const payload = { username, password, email, firstName, lastName, role };
     if (role === "admin") {
@@ -28,84 +29,78 @@ function RegisterPage() {
 
     try {
       await registerUser(payload);
-      setSuccess("Регистрация успешна! Теперь войдите в систему.");
+      setSuccess("Регистрация успешна! Сейчас перенаправим на вход.");
       setTimeout(() => navigate("/login"), 2000);
     } catch (e) {
       setError(e.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div style={{ maxWidth: 350, margin: "60px auto", textAlign: "center" }}>
-      <h1>Регистрация</h1>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Логин"
-          value={username}
-          onChange={e => setUsername(e.target.value)}
-          style={{ width: "100%", marginBottom: 8 }}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Пароль"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          style={{ width: "100%", marginBottom: 8 }}
-          required
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          style={{ width: "100%", marginBottom: 8 }}
-          required
-        />
-        <input
-          type="text"
-          placeholder="Имя"
-          value={firstName}
-          onChange={e => setFirstName(e.target.value)}
-          style={{ width: "100%", marginBottom: 8 }}
-          required
-        />
-        <input
-          type="text"
-          placeholder="Фамилия"
-          value={lastName}
-          onChange={e => setLastName(e.target.value)}
-          style={{ width: "100%", marginBottom: 8 }}
-          required
-        />
-        <select
-          value={role}
-          onChange={e => setRole(e.target.value)}
-          style={{ width: "100%", marginBottom: 8 }}
-        >
-          <option value="doctor">Врач</option>
-          <option value="admin">Администратор</option>
-        </select>
-        {role === "admin" && (
-          <input
-            type="password"
-            placeholder="Секретный код администратора"
-            value={adminSecret}
-            onChange={e => setAdminSecret(e.target.value)}
-            style={{ width: "100%", marginBottom: 8 }}
-            required
-          />
-        )}
-        <button style={{ width: "100%", marginBottom: 8 }} type="submit">
-          Зарегистрироваться
-        </button>
-      </form>
-      {error && <div style={{ color: "red", marginBottom: 8 }}>{error}</div>}
-      {success && <div style={{ color: "green", marginBottom: 8 }}>{success}</div>}
-    {/* Вот здесь добавляем ссылку */}
-      <div style={{ marginTop: 16 }}>
-        Уже есть аккаунт? <Link to="/login">Войти</Link>
+    <div className="auth-wrap">
+      <div className="card auth-card">
+        <div className="auth-head">
+          <span className="brand-mark auth-mark">✚</span>
+          <h1 className="auth-title">Регистрация</h1>
+          <p className="text-muted auth-sub">Аккаунт врача или администратора</p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="auth-form">
+          <div>
+            <label htmlFor="reg-username">Логин</label>
+            <input id="reg-username" type="text" value={username}
+              onChange={(e) => setUsername(e.target.value)} required />
+          </div>
+          <div>
+            <label htmlFor="reg-password">Пароль</label>
+            <input id="reg-password" type="password" value={password}
+              onChange={(e) => setPassword(e.target.value)} required />
+          </div>
+          <div>
+            <label htmlFor="reg-email">Email</label>
+            <input id="reg-email" type="email" value={email}
+              onChange={(e) => setEmail(e.target.value)} required />
+          </div>
+          <div className="auth-row">
+            <div>
+              <label htmlFor="reg-first">Имя</label>
+              <input id="reg-first" type="text" value={firstName}
+                onChange={(e) => setFirstName(e.target.value)} required />
+            </div>
+            <div>
+              <label htmlFor="reg-last">Фамилия</label>
+              <input id="reg-last" type="text" value={lastName}
+                onChange={(e) => setLastName(e.target.value)} required />
+            </div>
+          </div>
+          <div>
+            <label htmlFor="reg-role">Роль</label>
+            <select id="reg-role" value={role} onChange={(e) => setRole(e.target.value)}>
+              <option value="doctor">Врач</option>
+              <option value="admin">Администратор</option>
+            </select>
+          </div>
+          {role === "admin" && (
+            <div>
+              <label htmlFor="reg-secret">Секретный код администратора</label>
+              <input id="reg-secret" type="password" value={adminSecret}
+                onChange={(e) => setAdminSecret(e.target.value)} required />
+            </div>
+          )}
+
+          {error && <div className="alert alert-error">{error}</div>}
+          {success && <div className="alert alert-success">{success}</div>}
+
+          <button type="submit" disabled={loading} className="auth-submit">
+            {loading ? "Создаём…" : "Зарегистрироваться"}
+          </button>
+        </form>
+
+        <div className="auth-foot text-muted">
+          Уже есть аккаунт? <Link to="/login">Войти</Link>
+        </div>
       </div>
     </div>
   );

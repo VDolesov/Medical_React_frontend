@@ -1,21 +1,22 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-function ReportCard({ report, onDelete }) {
+function ReportCard({ report, linkTo, uploaderName, canDelete, onDelete }) {
   return (
-    <div style={{
-      border: "1px solid #ddd",
-      borderRadius: 8,
-      padding: 16,
-      marginBottom: 12,
-      display: "flex",
-      justifyContent: "space-between"
-    }}>
-      <div>
-        <Link to={`/report/${report.id}`}><b>{report.file_name}</b></Link>
-        <div style={{ fontSize: 12, color: "#555" }}>{new Date(report.created_at).toLocaleString()}</div>
+    <div className="report-card">
+      <div className="report-icon">📄</div>
+      <div className="report-body">
+        <Link to={linkTo} className="report-name">{report.file_name}</Link>
+        <div className="report-meta">
+          <span>{new Date(report.created_at).toLocaleString()}</span>
+          {uploaderName && <span className="badge badge-muted">{uploaderName}</span>}
+        </div>
       </div>
-      <button style={{ color: "red" }} onClick={() => onDelete(report.id)}>Удалить</button>
+      {canDelete && (
+        <button className="btn-danger report-del" onClick={onDelete}>
+          Удалить
+        </button>
+      )}
     </div>
   );
 }
