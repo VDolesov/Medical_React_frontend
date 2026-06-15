@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { getAllReports, deleteReport } from "../api";
+import ReportCard from "../components/ReportCard";
 
 function AdminReportsPage({ token }) {
   const [reports, setReports] = useState([]);
@@ -23,22 +23,26 @@ function AdminReportsPage({ token }) {
   };
 
   return (
-    <div style={{ maxWidth: 700, margin: "40px auto" }}>
-      <h2>Все отчёты пользователей</h2>
-      {error && <div style={{ color: "red" }}>{error}</div>}
-      <ul>
-        {reports.map(r => (
-          <li key={r.id} style={{ marginBottom: 10 }}>
-            <Link to={`/admin/report/${r.id}`}>{r.file_name}</Link>
-            {" | "}
-            <span>user_id: {r.user_id}</span>
-            {" | "}
-            <span>{new Date(r.created_at).toLocaleString()}</span>
-            {" | "}
-            <button onClick={() => handleDelete(r.id)} style={{ color: "red" }}>Удалить</button>
-          </li>
-        ))}
-      </ul>
+    <div className="page">
+      <h1>Все отчёты пользователей</h1>
+      {error && <div className="alert alert-error" style={{ marginBottom: 14 }}>{error}</div>}
+
+      {reports.length === 0 ? (
+        <div className="card empty">Отчётов нет</div>
+      ) : (
+        <div className="report-list">
+          {reports.map(r => (
+            <ReportCard
+              key={r.id}
+              report={r}
+              linkTo={`/admin/report/${r.id}`}
+              uploaderName={`ID пользователя: ${r.user_id}`}
+              canDelete={true}
+              onDelete={() => handleDelete(r.id)}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
