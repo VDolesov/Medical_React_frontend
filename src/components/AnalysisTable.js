@@ -2,37 +2,47 @@ import React from "react";
 
 function AnalysisTable({ data }) {
   if (!data || !data.outOfNorms) return null;
+  const items = data.outOfNorms;
 
-  // Если все в норме (строка):
-  if (data.outOfNorms.length === 1 && typeof data.outOfNorms[0] === "string") {
-    return <div style={{ color: "green" }}>{data.outOfNorms[0]}</div>;
+  if (items.length === 1 && typeof items[0] === "string") {
+    return <div className="alert alert-success">{items[0]}</div>;
   }
 
   return (
-    <table style={{ marginTop: 10, marginBottom: 20, width: "100%" }}>
-      <thead>
-        <tr>
-          <th>Показатель</th>
-          <th>Значение</th>
-          <th>Мин</th>
-          <th>Макс</th>
-          <th>Ед.</th>
-          <th>Статус</th>
-        </tr>
-      </thead>
-      <tbody>
-        {data.outOfNorms.map((item, idx) => (
-          <tr key={idx}>
-            <td>{item.analysis}</td>
-            <td>{item.value}</td>
-            <td>{item.min}</td>
-            <td>{item.max}</td>
-            <td>{item.unit}</td>
-            <td style={{ color: item.status === "выше нормы" ? "red" : "blue" }}>{item.status}</td>
+    <div className="table-wrap" style={{ marginTop: 8 }}>
+      <table>
+        <thead>
+          <tr>
+            <th>Показатель</th>
+            <th>Значение</th>
+            <th>Норма</th>
+            <th>Ед.</th>
+            <th>Статус</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {items.map((item, idx) =>
+            typeof item === "string" ? (
+              <tr key={idx}>
+                <td colSpan={5} className="text-muted">{item}</td>
+              </tr>
+            ) : (
+              <tr key={idx}>
+                <td>{item.analysis}</td>
+                <td><b>{item.value}</b></td>
+                <td className="text-muted">{item.min}–{item.max}</td>
+                <td>{item.unit}</td>
+                <td>
+                  <span className={"badge " + (item.status === "выше нормы" ? "badge-high" : "badge-low")}>
+                    {item.status}
+                  </span>
+                </td>
+              </tr>
+            )
+          )}
+        </tbody>
+      </table>
+    </div>
   );
 }
 
