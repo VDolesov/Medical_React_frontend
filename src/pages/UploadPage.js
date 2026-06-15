@@ -5,33 +5,47 @@ import { useNavigate } from "react-router-dom";
 function UploadPage({ token }) {
   const [file, setFile] = useState(null);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
     try {
       const { reportId } = await uploadFile(token, file);
       navigate(`/report/${reportId}`);
     } catch {
       setError("Ошибка загрузки файла");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div style={{ maxWidth: 500, margin: "48px auto" }}>
-      <h2>Загрузить файл анализов</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="file"
-          accept=".xlsx,.xls,.csv"
-          onChange={e => setFile(e.target.files[0])}
-          required
-          style={{ marginBottom: 16 }}
-        />
-        <button type="submit">Загрузить</button>
-      </form>
-      {error && <div style={{ color: "red" }}>{error}</div>}
+    <div className="page-narrow">
+      <h1>Загрузить анализы</h1>
+      <div className="card">
+        <p className="text-muted" style={{ marginTop: 0 }}>
+          Поддерживаются файлы .xlsx, .xls, .csv
+        </p>
+        <form onSubmit={handleSubmit} className="form-stack">
+          <div>
+            <label htmlFor="upload-file">Файл с результатами</label>
+            <input
+              id="upload-file"
+              type="file"
+              accept=".xlsx,.xls,.csv"
+              onChange={(e) => setFile(e.target.files[0])}
+              required
+            />
+          </div>
+          {error && <div className="alert alert-error">{error}</div>}
+          <button type="submit" disabled={loading}>
+            {loading ? "Загрузка…" : "Загрузить"}
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
