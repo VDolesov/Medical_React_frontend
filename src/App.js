@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter, Routes, Route, Link, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ProfilePage from "./pages/ProfilePage";
@@ -9,6 +9,7 @@ import ReportViewPage from "./pages/ReportViewPage";
 import UploadPage from "./pages/UploadPage";
 import AdminUsersPage from "./pages/AdminUsersPage";
 import AdminReportsPage from "./pages/AdminReportsPage";
+import Navbar from "./components/Navbar";
 import { getMe } from "./api";
 
 function App() {
@@ -44,22 +45,7 @@ function App() {
 
   return (
     <BrowserRouter>
-      {token && (
-        <nav style={{ background: "#f4f4f4", padding: "10px 20px", marginBottom: 24 }}>
-          <Link to="/" style={{ marginRight: 20 }}>Анализы</Link>
-          <Link to="/upload" style={{ marginRight: 20 }}>Загрузить</Link>
-          <Link to="/norms" style={{ marginRight: 20 }}>Нормы</Link>
-          <Link to="/profile" style={{ marginRight: 20 }}>Профиль</Link>
-          {/* Админ-ссылки */}
-          {user?.role === "admin" && (
-            <>
-              <Link to="/admin/users" style={{ marginRight: 20 }}>Пользователи</Link>
-              <Link to="/admin/reports" style={{ marginRight: 20 }}>Все отчёты</Link>
-            </>
-          )}
-          <button onClick={handleLogout}>Выйти</button>
-        </nav>
-      )}
+      {token && <Navbar user={user} onLogout={handleLogout} />}
       <Routes>
         {!token ? (
           <>
