@@ -341,3 +341,18 @@ tbody tr:hover { background: var(--surface-2); }
   color: var(--text-muted);
   font-weight: 600;
 }
+
+/* Просмотр отчёта */
+.patient-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.patient-head {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+.badge-high { background: var(--danger-bg); color: var(--danger); }
+.badge-low { background: #e7f0fd; color: var(--accent); }

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getReportById } from "../api";
+import AnalysisTable from "../components/AnalysisTable";
 
 function ReportViewPage({ token, role }) {
   const { id } = useParams();
@@ -15,41 +16,31 @@ function ReportViewPage({ token, role }) {
       .catch(e => setError(e.message));
   }, [id, token, role]);
 
-  if (error) return <div style={{ color: "red" }}>{error}</div>;
-  if (!report) return <div>Загрузка...</div>;
+  if (error) {
+    return <div className="page"><div className="alert alert-error">{error}</div></div>;
+  }
+  if (!report) {
+    return <div className="page"><div className="text-muted">Загрузка…</div></div>;
+  }
 
-  // report — это массив пациентов в отчёте
   return (
-    <div style={{ maxWidth: 700, margin: "40px auto" }}>
-      <h2>Детали отчёта</h2>
-      <ul>
-        {report.map((patient, idx) => (
-          <li key={idx} style={{ marginBottom: 18 }}>
-            <div>
-              <b>Код пациента:</b> {patient.code} &nbsp;
-              <b>Возраст:</b> {patient.age}
+    <div className="page">
+      <h1>Детали отчёта</h1>
+      {report.length === 0 ? (
+        <div className="card empty">В отчёте нет данных</div>
+      ) : (
+        <div className="patient-list">
+          {report.map((patient, idx) => (
+            <div className="card patient-card" key={idx}>
+              <div className="patient-head">
+                <span className="badge badge-brand">Код: {patient.code}</span>
+                <span className="badge badge-muted">Возраст: {patient.age}</span>
+              </div>
+              <AnalysisTable data={patient} />
             </div>
-            <div>
-              <b>Отклонения:</b>
-              <ul>
-                {Array.isArray(patient.outOfNorms) ? (
-                  patient.outOfNorms.map((n, i) =>
-                    typeof n === "string" ? (
-                      <li key={i}>{n}</li>
-                    ) : (
-                      <li key={i}>
-                        {n.analysis}: {n.value} {n.unit} ({n.status}, норма: {n.min}-{n.max})
-                      </li>
-                    )
-                  )
-                ) : (
-                  <li>Нет данных</li>
-                )}
-              </ul>
-            </div>
-          </li>
-        ))}
-      </ul>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
