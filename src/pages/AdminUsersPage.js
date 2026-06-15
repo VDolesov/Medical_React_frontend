@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { getAllUsers, createUser, deleteUser } from "../api";
 
+const ROLE_LABELS = { doctor: "Врач", admin: "Админ", patient: "Пациент" };
+
 function AdminUsersPage({ token }) {
   const [users, setUsers] = useState([]);
   const [showForm, setShowForm] = useState(false);
@@ -14,14 +16,14 @@ function AdminUsersPage({ token }) {
   });
   const [error, setError] = useState("");
 
-  // Загрузка списка пользователей
   useEffect(() => {
     getAllUsers(token)
       .then(setUsers)
       .catch(() => setError("Ошибка загрузки пользователей"));
   }, [token, showForm]);
 
-  // Создание пользователя
+  const setField = (key) => (e) => setForm(f => ({ ...f, [key]: e.target.value }));
+
   const handleCreate = async (e) => {
     e.preventDefault();
     setError("");
@@ -34,7 +36,6 @@ function AdminUsersPage({ token }) {
     }
   };
 
-  // Удаление пользователя
   const handleDelete = async (id) => {
     if (!window.confirm("Удалить пользователя?")) return;
     try {
@@ -46,40 +47,88 @@ function AdminUsersPage({ token }) {
   };
 
   return (
-    <div style={{ maxWidth: 700, margin: "40px auto" }}>
-      <h2>Пользователи</h2>
-      <button onClick={() => setShowForm(f => !f)}>
-        {showForm ? "Отмена" : "Создать пользователя"}
-      </button>
+    <div className="page">
+      <div className="page-header">
+        <h1>Пользователи</h1>
+        <button onClick={() => setShowForm(f => !f)} className={showForm ? "btn-ghost" : ""}>
+          {showForm ? "Отмена" : "+ Создать пользователя"}
+        </button>
+      </div>
+
+      {error && <div className="alert alert-error" style={{ marginBottom: 14 }}>{error}</div>}
+
       {showForm && (
-        <form onSubmit={handleCreate} style={{ marginTop: 16 }}>
-          <input required placeholder="Логин" value={form.username}
-            onChange={e => setForm(f => ({ ...f, username: e.target.value }))} />
-          <input required placeholder="Пароль" type="password" value={form.password}
-            onChange={e => setForm(f => ({ ...f, password: e.target.value }))} />
-          <input required placeholder="Email" type="email" value={form.email}
-            onChange={e => setForm(f => ({ ...f, email: e.target.value }))} />
-          <input required placeholder="Имя" value={form.firstName}
-            onChange={e => setForm(f => ({ ...f, firstName: e.target.value }))} />
-          <input required placeholder="Фамилия" value={form.lastName}
-            onChange={e => setForm(f => ({ ...f, lastName: e.target.value }))} />
-          <select value={form.role} onChange={e => setForm(f => ({ ...f, role: e.target.value }))}>
-            <option value="doctor">Врач</option>
-            <option value="admin">Админ</option>
-          </select>
-          <button type="submit" style={{ marginLeft: 16 }}>Создать</button>
-        </form>
+        <div className="card" style={{ marginBottom: 18 }}>
+          <form onSubmit={handleCreate} className="form-stack">
+            <div className="auth-row">
+              <div>
+                <label>Логин</label>
+                <input required value={form.username} onChange={setField("username")} />
+              </div>
+              <div>
+                <label>Пароль</label>
+                <input required type="password" value={form.password} onChange={setField("password")} />
+              </div>
+            </div>
+            <div>
+              <label>Email</label>
+              <input required type="email" value={form.email} onChange={setField("email")} />
+            </div>
+            <div className="auth-row">
+              <div>
+                <label>Имя</label>
+                <input required value={form.firstName} onChange={setField("firstName")} />
+              </div>
+              <div>
+                <label>Фамилия</label>
+                <input required value={form.lastName} onChange={setField("lastName")} />
+              </div>
+            </div>
+            <div>
+              <label>Роль</label>
+              <select value={form.role} onChange={setField("role")}>
+                <option value="doctor">Врач</option>
+                <option value="admin">Админ</option>
+              </select>
+            </div>
+            <button type="submit">Создать</button>
+          </form>
+        </div>
       )}
 
-      {error && <div style={{ color: "red" }}>{error}</div>}
-      <ul style={{ marginTop: 32 }}>
-        {users.map(u => (
-          <li key={u.id}>
-            <b>{u.username}</b> ({u.first_name} {u.last_name}, {u.role}, {u.email}){" "}
-            <button onClick={() => handleDelete(u.id)} style={{ color: "red" }}>Удалить</button>
-          </li>
-        ))}
-      </ul>
+      <div className="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Логин</th>
+              <th>Имя</th>
+              <th>Email</th>
+              <th>Роль</th>
+              <th>Действия</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users.map(u => (
+              <tr key={u.id}>
+                <td><b>{u.username}</b></td>
+                <td>{u.first_name} {u.last_name}</td>
+                <td className="text-muted">{u.email}</td>
+                <td><span className="badge badge-muted">{ROLE_LABELS[u.role] || u.role}</span></td>
+                <td>
+                  <button onClick={() => handleDelete(u.id)} className="btn-danger btn-sm">Удалить</button>
+                </td>
+              </tr>
+            ))}
+            {users.length === 0 && (
+              <tr>
+                <td colSpan={5} className="text-muted" style={{ textAlign: "center", padding: 24 }}>
+                  Пользователей нет
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
