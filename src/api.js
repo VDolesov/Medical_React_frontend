@@ -1,4 +1,4 @@
-const API_BASE = "https://medicalprojects-production.up.railway.app";
+const API_BASE = import.meta.env.VITE_API_URL || "https://medicalprojects-production.up.railway.app";
 
 // Функция регистрации
 export async function registerUser(payload) {
