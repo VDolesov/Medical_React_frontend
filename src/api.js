@@ -1,7 +1,5 @@
 const API_BASE = "https://medicalprojects-production.up.railway.app";
 
-console.log('API URL:', process.env.REACT_APP_API_URL);
-
 // Функция регистрации
 export async function registerUser(payload) {
   const res = await fetch(`${API_BASE}/register`, {
