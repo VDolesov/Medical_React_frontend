@@ -4,7 +4,7 @@
 
 ✅ **Проблема с API-запросами**: Все прямые fetch-запросы заменены на централизованные API-функции
 ✅ **Настройка CORS**: Backend настроен для работы с frontend-доменом
-✅ **Переменные окружения**: Добавлена поддержка REACT_APP_API_URL
+✅ **Переменные окружения**: Добавлена поддержка VITE_API_URL
 ✅ **Обновлены все страницы**: LoginPage, RegisterPage, ReportsPage, NormsPage, AdminPages и др.
 
 ## Backend
@@ -19,7 +19,7 @@
 2. **ВАЖНО**: Добавьте переменную окружения в Railway Dashboard:
 
 ```
-REACT_APP_API_URL=https://medicalprojects-production.up.railway.app
+VITE_API_URL=https://medicalprojects-production.up.railway.app
 ```
 
 3. Frontend будет доступен по адресу: `https://medicalreactfrontend-production.up.railway.app`
@@ -46,7 +46,7 @@ REACT_APP_API_URL=https://medicalprojects-production.up.railway.app
 Для локальной разработки создайте файл `.env`:
 
 ```
-REACT_APP_API_URL=http://localhost:5000
+VITE_API_URL=http://localhost:8080
 ```
 
 ## Тестирование API
