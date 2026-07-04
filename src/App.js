@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense, lazy } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import LoginPage from "./pages/LoginPage";
-import RegisterPage from "./pages/RegisterPage";
-import ProfilePage from "./pages/ProfilePage";
-import NormsPage from "./pages/NormsPage";
-import ReportsPage from "./pages/ReportsPage";
-import ReportViewPage from "./pages/ReportViewPage";
-import UploadPage from "./pages/UploadPage";
-import AdminUsersPage from "./pages/AdminUsersPage";
-import AdminReportsPage from "./pages/AdminReportsPage";
 import Navbar from "./components/Navbar";
 import { getMe } from "./api";
+
+// Ленивая загрузка страниц: каждая уходит в отдельный чанк.
+const LoginPage = lazy(() => import("./pages/LoginPage"));
+const RegisterPage = lazy(() => import("./pages/RegisterPage"));
+const ProfilePage = lazy(() => import("./pages/ProfilePage"));
+const NormsPage = lazy(() => import("./pages/NormsPage"));
+const ReportsPage = lazy(() => import("./pages/ReportsPage"));
+const ReportViewPage = lazy(() => import("./pages/ReportViewPage"));
+const UploadPage = lazy(() => import("./pages/UploadPage"));
+const AdminUsersPage = lazy(() => import("./pages/AdminUsersPage"));
+const AdminReportsPage = lazy(() => import("./pages/AdminReportsPage"));
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem("token"));
@@ -46,35 +48,36 @@ function App() {
   return (
     <BrowserRouter>
       {token && <Navbar user={user} onLogout={handleLogout} />}
-      <Routes>
-        {!token ? (
-          <>
-            <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="*" element={<Navigate to="/login" />} />
-          </>
-        ) : (
-          <>
-            {/* Для doctor и admin доступны стандартные страницы */}
-            <Route path="/" element={<ReportsPage token={token} />} />
-            <Route path="/upload" element={<UploadPage token={token} />} />
-            <Route path="/norms" element={<NormsPage token={token} isAdmin={user?.role === "admin"} />} />
-            <Route path="/profile" element={<ProfilePage token={token} />} />
-            <Route path="/report/:id" element={<ReportViewPage token={token} />} />
+      <Suspense fallback={<div className="page text-muted">Загрузка…</div>}>
+        <Routes>
+          {!token ? (
+            <>
+              <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <Route path="*" element={<Navigate to="/login" />} />
+            </>
+          ) : (
+            <>
+              {/* Для doctor и admin доступны стандартные страницы */}
+              <Route path="/" element={<ReportsPage token={token} />} />
+              <Route path="/upload" element={<UploadPage token={token} />} />
+              <Route path="/norms" element={<NormsPage token={token} isAdmin={user?.role === "admin"} />} />
+              <Route path="/profile" element={<ProfilePage token={token} />} />
+              <Route path="/report/:id" element={<ReportViewPage token={token} />} />
 
-            {/* Для администратора — свои страницы */}
-            {user?.role === "admin" && (
-              <>
-                <Route path="/admin/users" element={<AdminUsersPage token={token} />} />
-                <Route path="/admin/reports" element={<AdminReportsPage token={token} />} />
-                {/* Можно добавить просмотр любого отчёта: */}
-                <Route path="/admin/report/:id" element={<ReportViewPage token={token} role="admin" />} />
-              </>
-            )}
-            <Route path="*" element={<Navigate to="/" />} />
-          </>
-        )}
-      </Routes>
+              {/* Для администратора — свои страницы */}
+              {user?.role === "admin" && (
+                <>
+                  <Route path="/admin/users" element={<AdminUsersPage token={token} />} />
+                  <Route path="/admin/reports" element={<AdminReportsPage token={token} />} />
+                  <Route path="/admin/report/:id" element={<ReportViewPage token={token} role="admin" />} />
+                </>
+              )}
+              <Route path="*" element={<Navigate to="/" />} />
+            </>
+          )}
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   );
 }

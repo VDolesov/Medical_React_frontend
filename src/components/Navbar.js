@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { NavLink, Link } from "react-router-dom";
+import ThemeToggle from "./ThemeToggle";
 import "./Navbar.css";
 
 const linkClass = ({ isActive }) => "nav-link" + (isActive ? " nav-link-active" : "");
@@ -35,6 +36,7 @@ function Navbar({ user, onLogout }) {
           <div className="nav-user">
             {user?.username && <span className="user-chip">{user.username}</span>}
             {isAdmin && <span className="badge badge-brand">админ</span>}
+            <ThemeToggle />
             <button className="btn-ghost logout-btn" onClick={() => { close(); onLogout(); }}>
               Выйти
             </button>

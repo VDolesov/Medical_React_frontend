@@ -27,6 +27,7 @@ function LoginPage({ onLogin }) {
 
   return (
     <div className="auth-wrap">
+      <div>
       <div className="card auth-card">
         <div className="auth-head">
           <span className="brand-mark auth-mark">✚</span>
@@ -67,6 +68,10 @@ function LoginPage({ onLogin }) {
         <div className="auth-foot text-muted">
           Нет аккаунта? <Link to="/register">Зарегистрироваться</Link>
         </div>
+      </div>
+      <p className="auth-disclaimer">
+        Сервис не ставит диагнозы и не заменяет консультацию врача
+      </p>
       </div>
     </div>
   );
