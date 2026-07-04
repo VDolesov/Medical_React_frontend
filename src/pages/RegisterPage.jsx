@@ -22,10 +22,9 @@ function RegisterPage() {
     setSuccess(null);
     setLoading(true);
 
-    const payload = { username, password, email, firstName, lastName, role };
-    if (role === "admin") {
-      payload.adminSecret = adminSecret;
-    }
+    // Код персонала обязателен и для врача, и для администратора:
+    // регистрацию медперсонала контролирует администратор, выдающий код.
+    const payload = { username, password, email, firstName, lastName, role, adminSecret };
 
     try {
       await registerUser(payload);
@@ -82,13 +81,12 @@ function RegisterPage() {
               <option value="admin">Администратор</option>
             </select>
           </div>
-          {role === "admin" && (
-            <div>
-              <label htmlFor="reg-secret">Секретный код администратора</label>
-              <input id="reg-secret" type="password" value={adminSecret}
-                onChange={(e) => setAdminSecret(e.target.value)} required />
-            </div>
-          )}
+          <div>
+            <label htmlFor="reg-secret">Код регистрации персонала</label>
+            <input id="reg-secret" type="password" value={adminSecret}
+              onChange={(e) => setAdminSecret(e.target.value)} required
+              placeholder="Выдаёт администратор клиники" />
+          </div>
 
           {error && <div className="alert alert-error">{error}</div>}
           {success && <div className="alert alert-success">{success}</div>}
