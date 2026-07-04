@@ -172,3 +172,34 @@ export async function deleteUser(token, userId) {
   if (!res.ok) throw new Error(data.error || "Ошибка удаления пользователя");
   return data;
 }
+
+// ===== Аналитика риска (Spring-бэкенд) =====
+
+// Сводка по отчёту: средний риск, распределение, точки для графика
+export async function getAnalyticsSummary(token, reportId) {
+  const res = await fetch(`${API_BASE}/analytics/report/${reportId}/summary`, {
+    headers: { Authorization: "Bearer " + token }
+  });
+  if (!res.ok) throw new Error("Аналитика по отчёту недоступна");
+  return await res.json();
+}
+
+// Список пациентов отчёта с риск-оценкой, факторами и объяснением
+export async function getAnalyticsPatients(token, reportId) {
+  const res = await fetch(`${API_BASE}/analytics/report/${reportId}/patients`, {
+    headers: { Authorization: "Bearer " + token }
+  });
+  if (!res.ok) throw new Error("Аналитика по отчёту недоступна");
+  return await res.json();
+}
+
+// Перегенерировать аналитику отчёта (доступно врачу и администратору)
+export async function generateAnalytics(token, reportId) {
+  const res = await fetch(`${API_BASE}/analytics/report/${reportId}/generate`, {
+    method: "POST",
+    headers: { Authorization: "Bearer " + token }
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "Не удалось сгенерировать аналитику");
+  return data;
+}

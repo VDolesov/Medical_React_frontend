@@ -1,5 +1,5 @@
-/* Дизайн-система v3: изумруд + океан, Manrope/Inter, светлая и тёмная темы */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap');
+/* Дизайн-система v3: изумруд + океан, Manrope/Inter, светлая и тёмная темы.
+   Шрифты подключаются в index.html через preconnect — быстрее, чем @import. */
 
 :root {
   --brand: #0f8a6d;
@@ -225,6 +225,7 @@ tbody tr:hover { background: var(--surface-2); }
 /* Экран входа / регистрации: градиентный фон + карточка */
 .auth-wrap {
   min-height: 100vh;
+  min-height: 100dvh; /* мобильные браузеры: без прыжков из-за адресной строки */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -411,6 +412,102 @@ tbody tr:hover { background: var(--surface-2); }
   margin-bottom: 6px;
 }
 
+/* Страница аналитики */
+.badge-mid { background: var(--warning-bg); color: var(--warning); }
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.stat-card { padding: 16px 18px; }
+.stat-value {
+  font-family: var(--font-head);
+  font-size: 1.65rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+.stat-label {
+  margin-top: 2px;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.dist-bar {
+  display: flex;
+  height: 14px;
+  border-radius: 999px;
+  overflow: hidden;
+  gap: 2px;
+  margin: 10px 0 8px;
+}
+.dist-bar > span { display: block; min-width: 6px; }
+.dist-low { background: var(--success); }
+.dist-mid { background: var(--warning); }
+.dist-high { background: var(--danger); }
+.dist-empty { background: var(--surface-2); flex: 1; }
+
+.chart-card { margin-bottom: 22px; }
+.chart-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.chart-head h2 { font-size: 1.1rem; margin: 0 0 10px; }
+.chart-legend {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+.chart-legend .dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  margin-right: 5px;
+}
+.dot-low { background: var(--success); }
+.dot-mid { background: var(--warning); }
+.dot-high { background: var(--danger); }
+
+.risk-chart-scroll {
+  overflow-x: auto;
+  padding-top: 6px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.patients-title { margin: 6px 0 12px; }
+.trend-good { color: var(--success); background: var(--success-bg); }
+.trend-bad { color: var(--danger); background: var(--danger-bg); }
+.trend-flat { color: var(--text-muted); }
+
+.factor-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.factor-caption { font-size: 0.85rem; }
+
+.explanation summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--brand);
+}
+.explanation p {
+  margin: 10px 0 0;
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  white-space: pre-line;
+}
+
 /* Плавное появление страниц */
 .page, .auth-card {
   animation: page-in 0.25s ease-out;
@@ -431,3 +528,37 @@ tbody tr:hover { background: var(--surface-2); }
 }
 ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 ::-webkit-scrollbar-track { background: transparent; }
+
+/* ===== Мобильная адаптация ===== */
+@media (max-width: 760px) {
+  .page { padding: 18px 14px 40px; }
+  h1 { font-size: 1.45rem; }
+  h2 { font-size: 1.18rem; }
+  .card { padding: 16px; border-radius: 16px; }
+
+  /* Заголовок страницы: действия переезжают под заголовок на всю ширину */
+  .page-header { flex-direction: column; align-items: stretch; gap: 10px; }
+  .quick-actions { width: 100%; }
+  .quick-actions .btn,
+  .quick-actions button { flex: 1 1 auto; min-width: 0; }
+
+  /* iOS зумит страницу при фокусе на поле с шрифтом <16px */
+  input, select, textarea { font-size: 16px; }
+
+  th, td { padding: 9px 10px; font-size: 0.88rem; }
+
+  .report-card { flex-wrap: wrap; padding: 13px 14px; }
+  .report-del { margin-left: auto; }
+
+  .auth-card { padding: 26px 20px 22px; }
+
+  .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .stat-card { padding: 13px 14px; }
+  .stat-value { font-size: 1.35rem; }
+  .chart-head { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .chart-legend { gap: 10px; }
+}
+
+@media (max-width: 360px) {
+  .stats-grid { grid-template-columns: 1fr; }
+}

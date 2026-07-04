@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { getReportById } from "../api";
 import AnalysisTable from "../components/AnalysisTable";
 
@@ -25,7 +25,10 @@ function ReportViewPage({ token, role }) {
 
   return (
     <div className="page">
-      <h1>Детали отчёта</h1>
+      <div className="page-header">
+        <h1>Детали отчёта</h1>
+        <Link to={`/report/${id}/analytics`} className="btn">Аналитика риска →</Link>
+      </div>
       {report.length === 0 ? (
         <div className="card empty">В отчёте нет данных</div>
       ) : (

@@ -13,6 +13,7 @@ const ReportViewPage = lazy(() => import("./pages/ReportViewPage"));
 const UploadPage = lazy(() => import("./pages/UploadPage"));
 const AdminUsersPage = lazy(() => import("./pages/AdminUsersPage"));
 const AdminReportsPage = lazy(() => import("./pages/AdminReportsPage"));
+const AnalyticsPage = lazy(() => import("./pages/AnalyticsPage"));
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem("token"));
@@ -64,6 +65,7 @@ function App() {
               <Route path="/norms" element={<NormsPage token={token} isAdmin={user?.role === "admin"} />} />
               <Route path="/profile" element={<ProfilePage token={token} />} />
               <Route path="/report/:id" element={<ReportViewPage token={token} />} />
+              <Route path="/report/:id/analytics" element={<AnalyticsPage token={token} role={user?.role} />} />
 
               {/* Для администратора — свои страницы */}
               {user?.role === "admin" && (
