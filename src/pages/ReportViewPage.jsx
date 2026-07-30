@@ -11,7 +11,8 @@ function ReportViewPage({ token, role }) {
   useEffect(() => {
     getReportById(token, id, role === "admin")
       .then(data => {
-        setReport(typeof data === "string" ? JSON.parse(data) : data);
+        const parsed = typeof data === "string" ? JSON.parse(data) : data;
+        setReport(Array.isArray(parsed) ? parsed : parsed.patients || []);
       })
       .catch(e => setError(e.message));
   }, [id, token, role]);
