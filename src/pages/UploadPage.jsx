@@ -27,7 +27,7 @@ function UploadPage({ token }) {
       <h1>Загрузить анализы</h1>
       <div className="card">
         <p className="text-muted" style={{ marginTop: 0 }}>
-          Поддерживаются файлы .xlsx, .xls, .csv
+          Поддерживаются файлы .xlsx, .xlsm, .xls, .csv
         </p>
         <form onSubmit={handleSubmit} className="form-stack">
           <div>
@@ -35,7 +35,7 @@ function UploadPage({ token }) {
             <input
               id="upload-file"
               type="file"
-              accept=".xlsx,.xls,.csv"
+              accept=".xlsx,.xlsm,.xls,.csv"
               onChange={(e) => setFile(e.target.files[0])}
               required
             />
