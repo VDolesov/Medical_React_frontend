@@ -88,8 +88,10 @@ export async function deleteReport(token, reportId, isAdmin = false) {
 }
 
 // Получить подробный отчет
-export async function getReportById(token, reportId, isAdmin = false) {
-  const url = isAdmin ? `/admin/report/${reportId}` : `/report/${reportId}`;
+export async function getReportById(token, reportId, isAdmin = false, page = 1, limit = 50) {
+  const url = isAdmin
+    ? `/admin/report/${reportId}`
+    : `/report/${reportId}?page=${page}&limit=${limit}`;
   const res = await fetch(`${API_BASE}${url}`, {
     headers: { Authorization: "Bearer " + token }
   });

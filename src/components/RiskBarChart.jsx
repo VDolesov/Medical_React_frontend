@@ -8,9 +8,19 @@ const LEVEL_COLOR = {
   HIGH: "var(--danger)",
 };
 
+const MAX_BARS = 50;
+
 function RiskBarChart({ points }) {
-  const data = [...(points || [])].sort((a, b) => a.sortOrder - b.sortOrder);
-  if (data.length === 0) return null;
+  const all = [...(points || [])].sort((a, b) => a.sortOrder - b.sortOrder);
+  if (all.length === 0) return null;
+
+  const trimmed = all.length > MAX_BARS;
+  const data = trimmed
+    ? [...all]
+        .sort((a, b) => (b.riskScore ?? -1) - (a.riskScore ?? -1))
+        .slice(0, MAX_BARS)
+        .sort((a, b) => a.sortOrder - b.sortOrder)
+    : all;
 
   const barW = 30;
   const gap = 26;
@@ -34,7 +44,13 @@ function RiskBarChart({ points }) {
   const gridLines = [0, 35, 70, 100];
 
   return (
-    <div className="risk-chart-scroll">
+    <>
+      {trimmed && (
+        <p className="text-muted" style={{ marginTop: 0 }}>
+          Показаны {MAX_BARS} пациентов с наибольшим индексом из {all.length}.
+        </p>
+      )}
+      <div className="risk-chart-scroll">
       <svg
         viewBox={`0 0 ${width} ${height}`}
         width={width}
@@ -120,7 +136,8 @@ function RiskBarChart({ points }) {
           );
         })}
       </svg>
-    </div>
+      </div>
+    </>
   );
 }
 
