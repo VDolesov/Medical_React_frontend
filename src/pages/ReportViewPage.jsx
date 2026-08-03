@@ -40,7 +40,7 @@ function ReportViewPage({ token, role }) {
     <div className="page">
       <div className="page-header">
         <h1>Детали отчёта</h1>
-        <Link to={`/report/${id}/analytics`} className="btn">Аналитика риска →</Link>
+        <Link to={`/report/${id}/analytics`} className="btn">Индекс отклонений →</Link>
       </div>
       {total !== null && (
         <p className="text-muted">

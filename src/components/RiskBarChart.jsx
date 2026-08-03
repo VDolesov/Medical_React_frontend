@@ -56,7 +56,7 @@ function RiskBarChart({ points }) {
         width={width}
         height={height}
         role="img"
-        aria-label="График риска по пациентам"
+        aria-label="График индекса лабораторных отклонений по пациентам"
       >
         {zones.map((z) => (
           <rect

@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { getAnalyticsSummary, getAnalyticsPatients, generateAnalytics } from "../api";
 import RiskBarChart from "../components/RiskBarChart";
 
-const LEVEL_LABEL = { LOW: "низкий", MEDIUM: "средний", HIGH: "высокий" };
+const LEVEL_LABEL = { LOW: "слабые отклонения", MEDIUM: "умеренные", HIGH: "выраженные" };
 const LEVEL_BADGE = { LOW: "badge-low", MEDIUM: "badge-mid", HIGH: "badge-high" };
 const TREND_META = {
   IMPROVING: { icon: "↘", text: "улучшение", cls: "trend-good" },
@@ -17,7 +17,7 @@ function riskBadge(level, score) {
   }
   return (
     <span className={`badge ${LEVEL_BADGE[level] || "badge-muted"}`}>
-      риск {score}/100 · {LEVEL_LABEL[level] || level}
+      индекс {score}/100 · {LEVEL_LABEL[level] || level}
     </span>
   );
 }
@@ -75,7 +75,7 @@ function AnalyticsPage({ token, role }) {
     return (
       <div className="page">
         <div className="page-header">
-          <h1>Аналитика риска</h1>
+          <h1>Индекс лабораторных отклонений</h1>
           <Link to={`/report/${id}`} className="btn btn-ghost">← К отчёту</Link>
         </div>
         <div className="alert alert-error">
@@ -93,7 +93,7 @@ function AnalyticsPage({ token, role }) {
   return (
     <div className="page">
       <div className="page-header">
-        <h1>Аналитика риска</h1>
+        <h1>Индекс лабораторных отклонений</h1>
         <div className="quick-actions">
           <Link to={`/report/${id}`} className="btn btn-ghost">← К отчёту</Link>
           {canGenerate && (
@@ -113,7 +113,7 @@ function AnalyticsPage({ token, role }) {
         </div>
         <div className="card stat-card">
           <div className="stat-value">{generated}</div>
-          <div className="stat-label">с рассчитанным риском</div>
+          <div className="stat-label">с рассчитанным индексом</div>
         </div>
         <div className="card stat-card">
           <div className="stat-value">
@@ -149,11 +149,11 @@ function AnalyticsPage({ token, role }) {
 
       <div className="card chart-card">
         <div className="chart-head">
-          <h2>Индекс лабораторных отклонений по пациентам</h2>
+          <h2>Индекс по пациентам</h2>
           <div className="chart-legend">
-            <span><i className="dot dot-low" /> 0–35 низкий</span>
-            <span><i className="dot dot-mid" /> 36–70 средний</span>
-            <span><i className="dot dot-high" /> 71–100 высокий</span>
+            <span><i className="dot dot-low" /> 0–35 слабые</span>
+            <span><i className="dot dot-mid" /> 36–70 умеренные</span>
+            <span><i className="dot dot-high" /> 71–100 выраженные</span>
           </div>
         </div>
         {generated > 0 && summary?.scores?.length > 0 ? (

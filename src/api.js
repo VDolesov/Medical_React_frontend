@@ -175,9 +175,9 @@ export async function deleteUser(token, userId) {
   return data;
 }
 
-// ===== Аналитика риска (Spring-бэкенд) =====
+// ===== Индекс лабораторных отклонений =====
 
-// Сводка по отчёту: средний риск, распределение, точки для графика
+// Сводка по отчёту: средний индекс, распределение, точки для графика
 export async function getAnalyticsSummary(token, reportId) {
   const res = await fetch(`${API_BASE}/analytics/report/${reportId}/summary`, {
     headers: { Authorization: "Bearer " + token }
@@ -186,7 +186,7 @@ export async function getAnalyticsSummary(token, reportId) {
   return await res.json();
 }
 
-// Список пациентов отчёта с риск-оценкой, факторами и объяснением
+// Список пациентов отчёта с индексом, факторами и объяснением
 export async function getAnalyticsPatients(token, reportId) {
   const res = await fetch(`${API_BASE}/analytics/report/${reportId}/patients`, {
     headers: { Authorization: "Bearer " + token }
